@@ -362,7 +362,40 @@ local SaveManager = {} do
 			SaveManager.Options.SaveManager_ConfigList:SetValues(self:RefreshConfigList())
 			SaveManager.Options.SaveManager_ConfigList:SetValue(nil)
 		end})
-
+		section:AddButton({Title = "Delete config", Callback = function()
+		    local name = SaveManager.Options.SaveManager_ConfigList.Value
+		
+		    if not name then
+		        return self.Library:Notify({
+		            Title = "Interface",
+		            Content = "Config loader",
+		            SubContent = "No config selected",
+		            Duration = 7
+		        })
+		    end
+		
+		    local file = `{self.Folder}/settings/{name}.json`
+		    if not isfile(file) then
+		        return self.Library:Notify({
+		            Title = "Interface",
+		            Content = "Config loader",
+		            SubContent = "Config file not found",
+		            Duration = 7
+		        })
+		    end
+		
+		    delfile(file)
+		
+		    self.Library:Notify({
+		        Title = "Interface",
+		        Content = "Config loader",
+		        SubContent = string.format("Deleted config %q", name),
+		        Duration = 7
+		    })
+		
+		    SaveManager.Options.SaveManager_ConfigList:SetValues(self:RefreshConfigList())
+		    SaveManager.Options.SaveManager_ConfigList:SetValue(nil)
+		end})
 		local AutoloadButton
 		AutoloadButton = section:AddButton({Title = "Set as autoload", Description = "Current autoload config: none", Callback = function()
 			local name = SaveManager.Options.SaveManager_ConfigList.Value
